@@ -18,8 +18,8 @@ x_array = []
 y_array = []
 z_array = []
 x,y,z = 7,6,3
-dt = .01
-sigma, p, B = 10, -10, 8/3
+dt = 0.01
+sigma, p, B = 10, 28, 8/3
 
 for n in range(0,10000):
     x_array.append(x)
@@ -27,14 +27,20 @@ for n in range(0,10000):
     y_array.append(y)
 
     dxdt, dydt, dzdt = lorenz(x,y,z, sigma, p, B)
-    x = x + dxdt*dt
-    y = y + dydt*dt
-    z = z + dzdt* dt
+    xtrial = x + dxdt*dt
+    ytrial = y + dydt*dt
+    ztrial = z + dzdt* dt
 
-plt.plot(x_array,z_array)
+    dxdt2, dydt2, dzdt2 = lorenz(xtrial,ytrial,ztrial, sigma, p, B)
+    
+    x= x + ((1/2)*(dxdt + dxdt2))*dt
+    y= y + ((1/2)*(dydt + dydt2))*dt
+    z= z + ((1/2)*(dzdt + dzdt2))*dt
+
+
+
+plt.plot(x_array, z_array)
 plt.show()
-
-
 
 
 
