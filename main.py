@@ -17,11 +17,11 @@ def lorenz(x,y,z, sigma, p, B):
 x_array = []
 y_array = []
 z_array = []
-x,y,z = 7,6,3
+x,y,z = 3,5,6
 dt = 0.01
 sigma, p, B = 10, 28, 8/3
 
-for n in range(0,10000):
+for n in range(0,1000):
     x_array.append(x)
     z_array.append(z)
     y_array.append(y)
@@ -37,9 +37,14 @@ for n in range(0,10000):
     y= y + ((1/2)*(dydt + dydt2))*dt
     z= z + ((1/2)*(dzdt + dzdt2))*dt
 
+'''I want to investiage how long the path stays on one side of the z axis using the fact that the trajectroy hanges between
+positive and negative x values'''
 
+if x > 0
 
 plt.plot(x_array, z_array)
+plt.xlabel("X")
+plt.ylabel("Z")
 plt.show()
 
 
