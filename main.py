@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import csv
+import uuid
 '''
 Lorenz Equations
 dx/dt = sigma(y-x)
@@ -14,17 +16,36 @@ def lorenz(x,y,z, sigma, p, B):
     dzdt = x*y-B*z
     return dxdt, dydt, dzdt
 
+pos_time_count = []
+neg_time_count = []
+
 x_array = []
 y_array = []
 z_array = []
+t_array = []
+
 x,y,z = 3,5,6
-dt = 0.01
+dt = .01
 sigma, p, B = 10, 28, 8/3
 
-for n in range(0,1000):
+t = 0.0
+steps = 10000
+
+for n in range(steps):
+    t_array.append(t)
     x_array.append(x)
     z_array.append(z)
     y_array.append(y)
+
+    if x < 0 :
+        pos_time_count.append(0)
+        neg_time_count.append(1)
+    if x > 0 :
+        pos_time_count.append(1) 
+        neg_time_count.append(0)
+    if x == 0 :
+        pos_time_count.append(0)
+        neg_time_count.append(0)
 
     dxdt, dydt, dzdt = lorenz(x,y,z, sigma, p, B)
     xtrial = x + dxdt*dt
@@ -36,11 +57,16 @@ for n in range(0,1000):
     x= x + ((1/2)*(dxdt + dxdt2))*dt
     y= y + ((1/2)*(dydt + dydt2))*dt
     z= z + ((1/2)*(dzdt + dzdt2))*dt
+    
+    t += dt
 
-'''I want to investiage how long the path stays on one side of the z axis using the fact that the trajectroy hanges between
-positive and negative x values'''
-
-if x > 0
+run_id = uuid.uuid4().hex[:8]
+filename = f"data_run_{run_id}.csv"
+with open(filename, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(["t", "x", "pos_flag", "neg_flag"])
+    for ti, xi, posf, negf in zip(t_array, x_array, pos_time_count, neg_time_count):
+        writer.writerow([ti, xi, posf, negf])
 
 plt.plot(x_array, z_array)
 plt.xlabel("X")
