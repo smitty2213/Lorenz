@@ -75,13 +75,15 @@ filename = f"data_run_{run_id}.csv"
 
 with open(filename, 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(["t", "x", "pos_flag", "neg_flag"])
-    
+    writer.writerow(["t", "x", "pos_flag", "neg_flag","Total positive time","Percent Positive", "Total negative time", "Percent Negative"])
+
+    first_iteration = True
     for ti, xi, posf, negf in zip(t_array, x_array, pos_time_count, neg_time_count):
-        writer.writerow([ti, xi, posf, negf])
-    
-    writer.writerow(["Total positive time","Percent Positive", "Total negative time", "Percent Negative"])
-    writer.writerow([pos_time_total,pos_percent_time, neg_time_total, neg_percent_time])
+        if first_iteration:
+            writer.writerow([ti, xi, posf, negf, pos_time_total,pos_percent_time, neg_time_total, neg_percent_time])
+            first_iteration = False
+        else: 
+            writer.writerow([ti, xi, posf, negf])
 
 
 plt.plot(x_array, z_array)
