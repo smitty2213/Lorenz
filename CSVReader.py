@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
-x = pd.read_csv("data_run_fd97cb9f.csv", usecols=["t"])
-y_pos = pd.read_csv("data_run_fd97cb9f.csv", usecols=["pos_flag"])
-y_neg = pd.read_csv("data_run_fd97cb9f.csv", usecols=["neg_flag"])
+file = "data_run_06999c3a.csv"
+x = pd.read_csv(file, usecols=["t"])
+y_pos = pd.read_csv(file, usecols=["pos_flag"])
+y_neg = pd.read_csv(file, usecols=["neg_flag"])
 y_neg = y_neg * -1
 
-y_xValues = pd.read_csv("data_run_fd97cb9f.csv", usecols=["x"])
+y_xValues = pd.read_csv(file, usecols=["x"])
 
 
 plt.plot(x,y_xValues)

@@ -16,6 +16,8 @@ def lorenz(x,y,z, sigma, p, B):
     dzdt = x*y-B*z
     return dxdt, dydt, dzdt
 
+pos_delta_t=[]
+neg_delta_t=[]
 #Keep track of when x is positive and negative with a simple flag
 pos_time_count = []
 neg_time_count = []
@@ -27,7 +29,7 @@ z_array = []
 t_array = []
 
 #Inital conditions
-x,y,z = 3,5,6
+x,y,z = 2,5,6
 dt = .01
 sigma, p, B = 10, 28, 8/3
 t = 0.0
@@ -56,11 +58,18 @@ for n in range(steps+1):
 
     dxdt2, dydt2, dzdt2 = lorenz(xtrial,ytrial,ztrial, sigma, p, B)
     
+    previous_x = x
+    
     x= x + ((1/2)*(dxdt + dxdt2))*dt
     y= y + ((1/2)*(dydt + dydt2))*dt
     z= z + ((1/2)*(dzdt + dzdt2))*dt
     
     t += dt
+
+    if previous_x * x < 0 or previous_x * x == 0 :
+        pos_delta_t.append(sum(pos_time_count) * dt)
+        neg_delta_t.append(sum(neg_time_count) * dt)
+
 
 #Time totals for positive and negative X values using the time count flags
 pos_time_total = sum(pos_time_count)
@@ -80,10 +89,12 @@ with open(filename, 'w', newline='') as f:
     first_iteration = True
     for ti, xi, posf, negf in zip(t_array, x_array, pos_time_count, neg_time_count):
         if first_iteration:
-            writer.writerow([ti, xi, posf, negf, pos_time_total,pos_percent_time, neg_time_total, neg_percent_time])
+            writer.writerow([ti, xi, posf, negf,pos_time_total,pos_percent_time, neg_time_total, neg_percent_time])
             first_iteration = False
         else: 
             writer.writerow([ti, xi, posf, negf])
+    writer.writerow([pos_delta_t,neg_delta_t])
+
 
 
 plt.plot(x_array, z_array)
