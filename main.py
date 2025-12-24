@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import csv
 import uuid
+from itertools import zip_longest
 '''
 Lorenz Equations
 dx/dt = sigma(y-x)
@@ -16,11 +17,8 @@ def lorenz(x,y,z, sigma, p, B):
     dzdt = x*y-B*z
     return dxdt, dydt, dzdt
 
-pos_delta_t=[]
-neg_delta_t=[]
-#Keep track of when x is positive and negative with a simple flag
-pos_time_count = []
-neg_time_count = []
+pos_dwell_time=[]
+neg_dwell_time=[]
 
 #Arrays to store values to be plotted and traced in the data file
 x_array = []
@@ -35,21 +33,13 @@ sigma, p, B = 10, 28, 8/3
 t = 0.0
 steps = 10000
 
+previous_crossing_time = t
+
 for n in range(steps+1):
     t_array.append(t)
     x_array.append(x)
     z_array.append(z)
     y_array.append(y)
-
-    if x < 0 :
-        pos_time_count.append(0)
-        neg_time_count.append(1)
-    if x > 0 :
-        pos_time_count.append(1) 
-        neg_time_count.append(0)
-    if x == 0 :
-        pos_time_count.append(0)
-        neg_time_count.append(0)
 
     dxdt, dydt, dzdt = lorenz(x,y,z, sigma, p, B)
     xtrial = x + dxdt*dt
@@ -66,17 +56,26 @@ for n in range(steps+1):
     
     t += dt
 
-    if previous_x * x < 0 or previous_x * x == 0 :
-        pos_delta_t.append(sum(pos_time_count) * dt)
-        neg_delta_t.append(sum(neg_time_count) * dt)
 
+    if previous_x < 0 and x > 0 :
+        neg_dwell_time.append(t - previous_crossing_time)
+        previous_crossing_time = t
+    elif previous_x > 0 and x < 0:
+        pos_dwell_time.append(t - previous_crossing_time)
+        previous_crossing_time = t
 
-#Time totals for positive and negative X values using the time count flags
-pos_time_total = sum(pos_time_count)
-neg_time_total = sum(neg_time_count)
-total_time = pos_time_total + neg_time_total
-pos_percent_time = (pos_time_total/total_time)*100
-neg_percent_time = (neg_time_total/total_time)*100
+final_dwell = t - previous_crossing_time
+
+if x > 0:
+    pos_dwell_time.append(final_dwell)
+elif x < 0:
+    neg_dwell_time.append(final_dwell)
+
+mean_pos_dwell_time = sum(pos_dwell_time)/len(pos_dwell_time) if pos_dwell_time else 0.0
+mean_neg_dwell_time = sum(neg_dwell_time)/len(neg_dwell_time) if neg_dwell_time else 0.0
+
+pos_time_fraction = sum(pos_dwell_time)/t
+neg_time_fraction = sum(neg_dwell_time)/t
 
 #Create a unique file name
 run_id = uuid.uuid4().hex[:8]
@@ -84,16 +83,11 @@ filename = f"data_run_{run_id}.csv"
 
 with open(filename, 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(["t", "x", "pos_flag", "neg_flag","Total positive time","Percent Positive", "Total negative time", "Percent Negative"])
 
-    first_iteration = True
-    for ti, xi, posf, negf in zip(t_array, x_array, pos_time_count, neg_time_count):
-        if first_iteration:
-            writer.writerow([ti, xi, posf, negf,pos_time_total,pos_percent_time, neg_time_total, neg_percent_time])
-            first_iteration = False
-        else: 
-            writer.writerow([ti, xi, posf, negf])
-    writer.writerow([pos_delta_t,neg_delta_t])
+    writer.writerow(["Positive Dwell Time", "Negative Dwell Time"])
+
+    for positive_time, negative_time in zip_longest(pos_dwell_time, neg_dwell_time, fillvalue=''):
+        writer.writerow([positive_time, negative_time])
 
 
 
