@@ -1,23 +1,20 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-file = "data_run_cf47377c.csv"
-x = pd.read_csv(file, usecols=["t"])
-y_pos = pd.read_csv(file, usecols=["pos_flag"])
-y_neg = pd.read_csv(file, usecols=["neg_flag"])
-y_neg = y_neg * -1
-
-y_xValues = pd.read_csv(file, usecols=["x"])
+file = "data_run_e81c7f78.csv"
+dataframe = pd.read_csv(file)
+x = dataframe["Changing Variable"]
+neg_dwell_time = dataframe["mean_neg_dwell_time"]
+pos_dwell_time = dataframe["mean_pos_dwell_time"]
 
 
-plt.plot(x,y_xValues)
-plt.xlabel("Time")
-plt.ylabel("Values of X")
+
+plt.plot(x, neg_dwell_time)
+plt.plot(x, pos_dwell_time)
+plt.xlabel("Changing Variable")
+plt.ylabel("Average Dwell Times")
+plt.legend(["Negative Dwell Time", "Positive Dwell Time"])
 plt.show()
 
-plt.plot(x, y_neg)
-plt.plot(x, y_pos)
-plt.xlabel("Time")
-plt.ylabel("Positive and Negative X")
-plt.show()
+
 
