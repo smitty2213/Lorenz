@@ -22,7 +22,7 @@ def lorenz(x,y,z, sigma, p, B):
 
 def sweep():
     lorenz_value = []
-    for n in range(28, 40):
+    for n in range(10, 100):
         lorenz_value.append(lorenz_run(n))
     return lorenz_value
 
@@ -38,11 +38,12 @@ def lorenz_run(varies):
     t_array = []
 
 #Inital conditions
-    x,y,z = 1,0,0
+    x0,y0,z0 = 1,0,0
+    x,y,z = x0,y0,z0
     dt = .01
-    sigma, p, B = 10, varies, 8/3
+    sigma, p, B = varies, 28, 8/3
     t = 0.0
-    steps = 10000
+    steps = 1000000
 
     previous_crossing_time = t
 
@@ -90,19 +91,21 @@ def lorenz_run(varies):
     pos_time_fraction = sum(pos_dwell_time)/t
     neg_time_fraction = sum(neg_dwell_time)/t
 
-    return varies, mean_neg_dwell_time, mean_pos_dwell_time, pos_time_fraction, neg_time_fraction, pos_dwell_time, neg_dwell_time, x_array, z_array
+    total_time_fraction = pos_time_fraction + neg_time_fraction
+
+    return varies, mean_neg_dwell_time, mean_pos_dwell_time, pos_time_fraction, neg_time_fraction, total_time_fraction, pos_dwell_time, neg_dwell_time, p, B, sigma, x0, y0, z0, steps, dt
 
 run_id = uuid.uuid4().hex[:8]
 filename = f"data_run_{run_id}.csv"
 
 with open(filename, 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(["Changing Variable", "mean_neg_dwell_time", "mean_pos_dwell_time", "pos_time_fraction", "neg_time_fraction"])
+    writer.writerow(["Changing Variable", "mean_neg_dwell_time", "mean_pos_dwell_time", "pos_time_fraction", "neg_time_fraction","pos_fraction + neg_fraction", "p", "sigma", "B", "x0", "y0", "z0", "steps", "dt"])
    
     results = sweep()
     
     for n in results:
-        writer.writerow([n[0], n[1], n[2], n[3], n[4]])
+        writer.writerow([n[0], n[1], n[2], n[3], n[4],n[5], n[8], n[10], n[9], n[11], n[12], n[13], n[14], n[15]])
 
 
 
