@@ -23,11 +23,15 @@ def lorenz(x,y,z, sigma, p, B):
 def sweep():
     lorenz_value = []
     for n in range(10, 100):
-        lorenz_value.append(lorenz_run(n))
+        for i in range(0,6):
+            x0 = [1.0000001,1.0000002,1.0000003,1.0000004,1.0000005]
+            y0 = [0, 0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
+            z0 = [0, 0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
+            lorenz_value.append(lorenz_run(n, x0[i], y0[i], z0[i]))
     return lorenz_value
 
 
-def lorenz_run(varies):
+def lorenz_run(varies, x0, y0, z0):
     pos_dwell_time=[]
     neg_dwell_time=[]
 
@@ -38,10 +42,9 @@ def lorenz_run(varies):
     t_array = []
 
 #Inital conditions
-    x0,y0,z0 = 1,0,0
     x,y,z = x0,y0,z0
     dt = .01
-    sigma, p, B = varies, 28, 8/3
+    sigma, p, B = 10, varies, 8/3
     t = 0.0
     steps = 1000000
 
