@@ -1,7 +1,6 @@
-import matplotlib.pyplot as plt
 import csv
 import uuid
-from itertools import zip_longest
+
 
 '''
 Lorenz Equations
@@ -22,9 +21,9 @@ def lorenz(x,y,z, sigma, p, B):
 
 def sweep():
     lorenz_value = []
-    for n in range(10, 100):
+    for n in range(25, 250):
         for i in range(0,6):
-            x0 = [1.0000001,1.0000002,1.0000003,1.0000004,1.0000005]
+            x0 = [1.0000001,1.0000002,1.0000003,1.0000004,1.0000005, 1.0000005]
             y0 = [0, 0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
             z0 = [0, 0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
             lorenz_value.append(lorenz_run(n, x0[i], y0[i], z0[i]))
