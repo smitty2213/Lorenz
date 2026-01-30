@@ -1,6 +1,6 @@
 import csv
 import uuid
-
+from itertools import zip_longest
 
 '''
 Lorenz Equations
@@ -11,23 +11,23 @@ dz/dt = xy-Bz
 B,p,sigma are paramaeters
 
 '''
-
+#Lorenz Equations
 def lorenz(x,y,z, sigma, p, B):
     dxdt = sigma*(y-x)
     dydt = x*(p-z)-y
     dzdt = x*y-B*z
     return dxdt, dydt, dzdt
 
-
-def sweep():
+#A function to sweep a designated variable for each of the chosen inital conditions below
+'''def sweep():
     lorenz_value = []
-    for n in range(25, 250):
-        for i in range(0,6):
-            x0 = [1.0000001,1.0000002,1.0000003,1.0000004,1.0000005, 1.0000005]
-            y0 = [0, 0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
-            z0 = [0, 0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
+    for n in range(0,1):
+        for i in range(0,1):
+            x0 = [1.0000001]
+            y0 = [0]
+            z0 = [0]
             lorenz_value.append(lorenz_run(n, x0[i], y0[i], z0[i]))
-    return lorenz_value
+    return lorenz_value'''
 
 
 def lorenz_run(varies, x0, y0, z0):
@@ -43,7 +43,7 @@ def lorenz_run(varies, x0, y0, z0):
 #Inital conditions
     x,y,z = x0,y0,z0
     dt = .01
-    sigma, p, B = 10, varies, 8/3
+    sigma, p, B = 10, 28, 8/3
     t = 0.0
     steps = 1000000
 
@@ -97,17 +97,26 @@ def lorenz_run(varies, x0, y0, z0):
 
     return varies, mean_neg_dwell_time, mean_pos_dwell_time, pos_time_fraction, neg_time_fraction, total_time_fraction, pos_dwell_time, neg_dwell_time, p, B, sigma, x0, y0, z0, steps, dt
 
+results = lorenz_run(varies=0, x0=1, y0=0, z0=0)
+
 run_id = uuid.uuid4().hex[:8]
-filename = f"data_run_{run_id}.csv"
+filename = f"data_event_run_{run_id}.csv"
+
 
 with open(filename, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["Changing Variable", "mean_neg_dwell_time", "mean_pos_dwell_time", "pos_time_fraction", "neg_time_fraction","pos_fraction + neg_fraction", "p", "sigma", "B", "x0", "y0", "z0", "steps", "dt"])
-   
-    results = sweep()
     
-    for n in results:
-        writer.writerow([n[0], n[1], n[2], n[3], n[4],n[5], n[8], n[10], n[9], n[11], n[12], n[13], n[14], n[15]])
+    writer.writerow([results[0], results[1], results[2], results[3], results[4],results[5], results[8], results[10], results[9], results[11], results[12], results[13], results[14], results[15]])
+
+filename2 = f"run_level_data_{run_id}.csv"
+
+with open(filename2, 'w', newline='') as g:
+    writer2 = csv.writer(g)
+    writer2.writerow(["Pos Dwell Time", "Neg Dwell"])
+
+    for pos_time, neg_time in zip_longest(results[6], results[7], fillvalue=""):
+        writer2.writerow([pos_time, neg_time])
 
 
 
