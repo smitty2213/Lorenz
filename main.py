@@ -45,7 +45,7 @@ def lorenz_run(varies, x0, y0, z0):
     dt = .01
     sigma, p, B = 10, 28, 8/3
     t = 0.0
-    steps = 1000000
+    steps = 10000000
 
     previous_crossing_time = t
 
