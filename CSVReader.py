@@ -3,14 +3,14 @@ import pandas as pd
 import numpy as np
 
 #file = "data_run_6143af4a.csv" #Big picture overview data
-file2 = "run_level_data_ff8645fa.csv" #Run level data
+file2 = "run_level_data_5b7767e3.csv" #Run level data
 
 #Dataframes to hold the data
 #dataframe = pd.read_csv(file)
 dataframe2 = pd.read_csv(file2)
 
 #Variables
-deltaT = 0.1 #Bin Width [0, detlaT), [deltaT, 2 * deltaT), ...
+deltaT = 0.40 #Bin Width [0, detlaT), [deltaT, 2 * deltaT), ...
 cols = ["Pos Dwell Time", "Neg Dwell"]
 dataframe2[cols] = dataframe2[cols].apply(pd.to_numeric, errors = "coerce") #Turns any empty spaces from String to numbers and replace the dataframe with numberics
 maxT = dataframe2[cols].to_numpy() #Crate a numpy array
@@ -36,6 +36,19 @@ plt.plot(t, pdf)
 plt.xlabel("Dwell Time")
 plt.ylabel("Density")
 plt.show()
+
+#Plotting the ln(S(t)) the survivavility function
+clean_data = data[np.isfinite(data) & (data > 0)] #Cleaning data to remove negative numbers, 0, and NaN
+sorted_data = np.sort(clean_data) #Sorts data from smallest time to largest
+n = len(sorted_data) # Gets the total length 
+s = (n - np.arange(n))/n #Survivablitiy function 
+
+plt.plot(sorted_data, np.log(s))
+plt.xlabel("Dwell time t")
+plt.ylabel("ln(S(t))")
+plt.show()
+
+
 
 #Mean Dwell Time Graph, commenting this out until needed
 '''y = dataframe.groupby("Changing Variable")

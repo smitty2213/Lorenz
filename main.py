@@ -1,6 +1,7 @@
 import csv
 import uuid
 from itertools import zip_longest
+import os
 
 '''
 Lorenz Equations
@@ -45,7 +46,7 @@ def lorenz_run(varies, x0, y0, z0):
     dt = .01
     sigma, p, B = 10, 28, 8/3
     t = 0.0
-    steps = 10000000
+    steps = 100000000
 
     previous_crossing_time = t
 
@@ -95,7 +96,8 @@ def lorenz_run(varies, x0, y0, z0):
 
     total_time_fraction = pos_time_fraction + neg_time_fraction
 
-    return varies, mean_neg_dwell_time, mean_pos_dwell_time, pos_time_fraction, neg_time_fraction, total_time_fraction, pos_dwell_time, neg_dwell_time, p, B, sigma, x0, y0, z0, steps, dt
+    return (varies, mean_neg_dwell_time, mean_pos_dwell_time, pos_time_fraction, neg_time_fraction, 
+    total_time_fraction, pos_dwell_time, neg_dwell_time, p, B, sigma, x0, y0, z0, steps, dt)
 
 results = lorenz_run(varies=0, x0=1, y0=0, z0=0)
 
@@ -105,9 +107,11 @@ filename = f"data_event_run_{run_id}.csv"
 
 with open(filename, 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(["Changing Variable", "mean_neg_dwell_time", "mean_pos_dwell_time", "pos_time_fraction", "neg_time_fraction","pos_fraction + neg_fraction", "p", "sigma", "B", "x0", "y0", "z0", "steps", "dt"])
+    writer.writerow(["Changing Variable", "mean_neg_dwell_time", "mean_pos_dwell_time", "pos_time_fraction", 
+                     "neg_time_fraction","pos_fraction + neg_fraction", "p", "sigma", "B", "x0", "y0", "z0", "steps", "dt"])
     
-    writer.writerow([results[0], results[1], results[2], results[3], results[4],results[5], results[8], results[10], results[9], results[11], results[12], results[13], results[14], results[15]])
+    writer.writerow([results[0], results[1], results[2], results[3], results[4],results[5], results[8], results[10], 
+                     results[9], results[11], results[12], results[13], results[14], results[15]])
 
 filename2 = f"run_level_data_{run_id}.csv"
 

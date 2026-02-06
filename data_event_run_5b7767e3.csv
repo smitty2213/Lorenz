@@ -1,0 +1,2 @@
+Changing Variable,mean_neg_dwell_time,mean_pos_dwell_time,pos_time_fraction,neg_time_fraction,pos_fraction + neg_fraction,p,sigma,B,x0,y0,z0,steps,dt
+0,1.7372612118279132,1.7383099035868994,0.5001517349984557,0.4998482650015443,1.0,28,10,2.6666666666666665,1,0,0,100000000,0.01
